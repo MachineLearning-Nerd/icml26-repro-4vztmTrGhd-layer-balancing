@@ -11,7 +11,7 @@
     "icml2026-repro",
     "paper-4vztmTrGhd"
   ],
-  "updated_at": "2026-07-17T03:36:39+00:00",
+  "updated_at": "2026-07-17T03:58:02+00:00",
   "root": {
     "slug": "index",
     "title": "Repro - Balancing Learning Rates Across Layers",
@@ -50,5 +50,5 @@
     ]
   },
   "agent_view_tokens": 1899,
-  "revision": "1784259399803302043"
+  "revision": "1784260682154403826"
 }
