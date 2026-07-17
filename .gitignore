@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+upstream/
+paper.pdf
+paper.txt
+.trackio/logbook/.serve.log
+

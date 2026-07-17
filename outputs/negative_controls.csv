@@ -1,0 +1,3 @@
+control,expected,observed,value,passed
+outside_strict_width_boundary_h256_alpha1.5,two_step_not_local_min,not_local_min,-1.1380038014561997e-10,True
+corrupted_one_step_interaction_coefficient,formula_rejected,formula_rejected,2.1599999566745964e-09,True

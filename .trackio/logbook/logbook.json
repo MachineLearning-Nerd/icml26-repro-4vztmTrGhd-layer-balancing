@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "title": "Repro - Balancing Learning Rates Across Layers",
+  "emoji": "🎯",
+  "space_id": "DineshAI/4vztmTrGhd",
+  "paper": {
+    "arxiv_id": "2606.00340",
+    "openreview_id": "4vztmTrGhd"
+  },
+  "tags": [
+    "icml2026-repro",
+    "paper-4vztmTrGhd"
+  ],
+  "updated_at": "2026-07-17T03:32:26+00:00",
+  "root": {
+    "slug": "index",
+    "title": "Repro - Balancing Learning Rates Across Layers",
+    "file": "pages/index.md",
+    "children": [
+      {
+        "slug": "claim-1-asymmetry-then-balance",
+        "title": "Claim 1 — asymmetry then balance",
+        "file": "pages/claim-1-asymmetry-then-balance/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-2-exact-gradients-and-losses",
+        "title": "Claim 2 — exact gradients and losses",
+        "file": "pages/claim-2-exact-gradients-and-losses/page.md",
+        "children": []
+      },
+      {
+        "slug": "methods-environment",
+        "title": "Methods & environment",
+        "file": "pages/methods-environment/page.md",
+        "children": []
+      },
+      {
+        "slug": "negative-controls-falsification",
+        "title": "Negative controls & falsification",
+        "file": "pages/negative-controls-falsification/page.md",
+        "children": []
+      },
+      {
+        "slug": "conclusion",
+        "title": "Conclusion",
+        "file": "pages/conclusion/page.md",
+        "children": []
+      }
+    ]
+  },
+  "agent_view_tokens": 1607,
+  "revision": "1784259146850876124"
+}

@@ -1,0 +1,19 @@
+{
+  "space_id": "DineshAI/4vztmTrGhd",
+  "emoji": "🎯",
+  "created_at": "2026-07-17T03:30:48+00:00",
+  "paper": {
+    "arxiv_id": "2606.00340",
+    "openreview_id": "4vztmTrGhd"
+  },
+  "tags": [
+    "icml2026-repro",
+    "paper-4vztmTrGhd"
+  ],
+  "autosync": true,
+  "private": false,
+  "title": "Repro - Balancing Learning Rates Across Layers",
+  "last_page": "conclusion",
+  "local_dashboards": {},
+  "artifacts_bucket": "DineshAI/4vztmTrGhd-artifacts"
+}
