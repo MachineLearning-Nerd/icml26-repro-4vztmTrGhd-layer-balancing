@@ -17,6 +17,12 @@
 - Full run: 12/12 one-step local maxima and 12/12 two-step local minima;
   max gradient error `1.735e-17`; maximum matrix/formula discrepancy `0.77`
   standard errors; 17/17 tests and 2/2 controls pass.
+- The official full-scale empirical path (`h=n=d=1000`, test size 4000, five
+  seeds) was also captured: the theoretical loss differs from exact GD by 0.145%
+  after one step and 1.633% after two. This is consistent with the paper's bounded
+  surrogate error (`O(h^-1)` / `O(h^-1/2)`) and is disclosed rather than called
+  bit-exact. The helper script's `not-verified` label comes from its own stricter
+  0.1% cutoff, which is not a condition in the paper.
 - Trackio logbook is complete, tagged, pinned, and secret-scanned. Publishing to
   `DineshAI/4vztmTrGhd` was attempted on 2026-07-17 but Hugging Face rejected
   Space creation because the account reached its 20-Spaces-per-day limit. The
