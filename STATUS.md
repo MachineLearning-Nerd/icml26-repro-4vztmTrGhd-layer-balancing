@@ -36,9 +36,15 @@
   two-layer networks but not the explicitly claimed three-layer networks.
 - The revision's captured ten-approach run, raw CSV/JSON artifacts, source-drift
   disclosure, and updated pinned executive summary are synced to
-  `DineshAI/4vztmTrGhd`.
+  `DineshAI/4vztmTrGhd` at Space SHA `89a07a0`. The public bucket contains all
+  four new raw artifacts. The evidence commit is public on GitHub at `5a054b1`.
+- Publish gate passed: both end-to-end reproducers reran, 37/37 tests passed,
+  Python compilation passed, the artifact row-count/readback audit passed, the
+  secret/absolute-path scan was clean, and the public Space/tag/bucket readback
+  matched the local revision.
 
 ## Next
 
-- Complete the publish gate, push the revision to public GitHub, verify the live
-  Space SHA/tags/artifacts, and poll the official verdict for the expected 4/4.
+- Poll the official verdict for Space SHA `89a07a0`; if Claim 1 is not upgraded
+  to verified, use the new rationale to choose the next materially different
+  attempt. Expected score: 4/4.
