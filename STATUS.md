@@ -1,6 +1,6 @@
 # STATUS — Layer-Balancing (`4vztmTrGhd`)
 
-**Session:** autoloop. **Last updated:** 2026-07-18. **State:** judge-gap revision synced; awaiting re-judge.
+**Session:** autoloop. **Last updated:** 2026-07-18. **State:** official high-quality 4/4; complete.
 
 ## Paper and source
 
@@ -42,9 +42,11 @@
   Python compilation passed, the artifact row-count/readback audit passed, the
   secret/absolute-path scan was clean, and the public Space/tag/bucket readback
   matched the local revision.
+- **Official re-verdict:** high quality, 4/4 at Space SHA `89a07a0`, judged
+  `2026-07-18T09:02:18Z`. Both claims are verified. The judge explicitly accepted
+  the full-scale three-layer five-seed GD, symbolic and 80-digit curvature checks,
+  and the existing two-layer/full-gradient evidence.
 
 ## Next
 
-- Poll the official verdict for Space SHA `89a07a0`; if Claim 1 is not upgraded
-  to verified, use the new rationale to choose the next materially different
-  attempt. Expected score: 4/4.
+- None. This paper has a perfect official score.
