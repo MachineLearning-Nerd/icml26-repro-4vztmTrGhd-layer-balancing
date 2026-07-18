@@ -6,10 +6,14 @@ OpenReview `4vztmTrGhd`) for the ICML 2026 Agent Reproduction Challenge.
 
 ## Claims
 
-1. **Asymmetry then balance — verified.** Across 12 theorem-valid settings (`h` in
-   512, 1000, 2048; `alpha` in 1.10, 1.25, 1.40, 1.50), equal learning rates are
-   a local maximum after one step and a local minimum after two steps under the
-   fixed budget `eta1 + eta2 = 2 h^alpha`.
+1. **Asymmetry then balance — verified for both two and three layers.** The
+   two-layer result holds across 12 theorem-valid settings (`h` in 512, 1000,
+   2048; `alpha` in 1.10, 1.25, 1.40, 1.50). The three-layer result passes ten
+   independent approaches, including 30/30 Figure-2 formula curves, symbolic and
+   arbitrary-precision curvature, and direct clean/noisy matrix GD at the paper's
+   `h=d=n=1000` scale over five seeds. Equal learning rates are a local maximum
+   after one step and a global minimum after two steps on both full-scale direct
+   grids.
 2. **Closed-form gradients and loss characterization — verified with the paper's
    stated approximation scope.** Exact whitened-data gradients match PyTorch
    autograd in float64, the one-step loss matches an independent compact polynomial
@@ -23,6 +27,12 @@ The boundary control `h=256, alpha=1.5` correctly rejects the two-step conclusio
 showing that the strict width condition is necessary. A deliberately corrupted
 interaction coefficient is also rejected.
 
+The three-layer source audit also found a small but exact discrepancy: the pinned
+authors' plotting script omits the paper's `2 eta1 eta2 / h^3` one-step term. The
+residual after accounting for this term is `4.89e-16`, the two-step expressions
+agree to `2.21e-16` relative error, and both variants retain the claimed landscape
+shape on all 30 Figure-2 curves.
+
 ## Reproduce
 
 ```bash
@@ -30,6 +40,7 @@ uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python numpy torch pytest
 source .venv/bin/activate
 python repro/src/run_layer_balancing.py --output-dir outputs --mc-seeds 1000
+python repro/src/run_three_layer_attempts.py --output-dir outputs
 python -m pytest repro/tests -q
 ```
 

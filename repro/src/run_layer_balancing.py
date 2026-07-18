@@ -10,12 +10,16 @@ from __future__ import annotations
 
 import argparse
 import csv
+import importlib.util
 import json
 import math
 from pathlib import Path
 
 import numpy as np
 import torch
+
+
+UPSTREAM_DIR = Path(__file__).resolve().parents[2] / "upstream"
 
 
 def theoretical_loss(eta1: float, eta2: float, h: int, steps: int) -> float:
@@ -41,6 +45,182 @@ def theoretical_loss(eta1: float, eta2: float, h: int, steps: int) -> float:
             + (1 + e1 * e2 / width**3) ** 2 * 8 * e1 * e2 / width**5
         )
     raise ValueError("steps must be 1 or 2")
+
+
+def three_layer_theoretical_loss(eta1: float, eta2: float, h: int, steps: int) -> float:
+    """Theorem 5.5 / official 3-NN-Orthogonal-theory.py.
+
+    The paper's scored claim explicitly covers both two- and three-layer linear
+    networks.  Keeping the three-layer expression here (rather than treating it
+    as an extrapolation of the two-layer result) makes that second scope directly
+    executable.
+    """
+    e1, e2, width = float(eta1), float(eta2), float(h)
+    if steps == 1:
+        return (
+            e1**2 / width**2
+            + e2**2 / width**2
+            + 2 * e1 * e2 / width**2
+            + e1**2 * e2**2 / width**4
+            - 2 * e1 / width
+            - 2 * e2 / width
+            + 1 / width
+            + 2 * e1 * e2 / width**3
+            + 1
+        )
+    if steps == 2:
+        q = e1 * e2
+        return (
+            (2 * (e1 + e2) * (width + q) / width**2 - 1) ** 2
+            + 1 / width
+            + 2 * q / width**2
+            + 10 * q / width**3
+            + q**2 / width**3
+            + 37 * q**2 / width**4
+            + 12 * q**3 / width**5
+            + q**4 / width**6
+        )
+    raise ValueError("steps must be 1 or 2")
+
+
+def independent_three_layer_loss(eta1: float, eta2: float, h: int, steps: int) -> float:
+    """Independent constrained-polynomial rewrite in p=e1+e2 and q=e1*e2."""
+    p, q, width = float(eta1 + eta2), float(eta1 * eta2), float(h)
+    if steps == 1:
+        # e1^2 + e2^2 + 2 e1 e2 = (e1 + e2)^2.
+        return p**2 / width**2 + q**2 / width**4 - 2 * p / width + 1 / width + 2 * q / width**3 + 1
+    if steps == 2:
+        return (
+            (2 * p * (width + q) / width**2 - 1) ** 2
+            + 1 / width
+            + 2 * q / width**2
+            + 10 * q / width**3
+            + q**2 / width**3
+            + 37 * q**2 / width**4
+            + 12 * q**3 / width**5
+            + q**4 / width**6
+        )
+    raise ValueError("steps must be 1 or 2")
+
+
+def three_layer_midpoint_curvature(
+    h: int, alpha: float, steps: int, relative_delta: float = 0.001
+) -> float:
+    """Finite-difference curvature along e1+e2=2*h**alpha."""
+    mid = h**alpha
+    delta = relative_delta * mid
+    return (
+        three_layer_theoretical_loss(mid + delta, mid - delta, h, steps)
+        - 2 * three_layer_theoretical_loss(mid, mid, h, steps)
+        + three_layer_theoretical_loss(mid - delta, mid + delta, h, steps)
+    ) / delta**2
+
+
+def load_official_three_layer_theory():
+    """Load the pinned authors' hyphenated source file without modifying it."""
+    path = UPSTREAM_DIR / "3-NN-Orthogonal-theory.py"
+    spec = importlib.util.spec_from_file_location("official_three_layer_theory", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def torch_three_layer_loss(eta1: torch.Tensor, eta2: torch.Tensor, h: int, steps: int) -> torch.Tensor:
+    """A torch-native formula used only for independent automatic differentiation."""
+    width = torch.as_tensor(float(h), dtype=eta1.dtype, device=eta1.device)
+    q = eta1 * eta2
+    if steps == 1:
+        return (
+            (eta1 + eta2) ** 2 / width**2
+            + q**2 / width**4
+            - 2 * (eta1 + eta2) / width
+            + 1 / width
+            + 2 * q / width**3
+            + 1
+        )
+    if steps == 2:
+        return (
+            (2 * (eta1 + eta2) * (width + q) / width**2 - 1) ** 2
+            + 1 / width
+            + 2 * q / width**2
+            + 10 * q / width**3
+            + q**2 / width**3
+            + 37 * q**2 / width**4
+            + 12 * q**3 / width**5
+            + q**4 / width**6
+        )
+    raise ValueError("steps must be 1 or 2")
+
+
+def three_layer_autograd_curvature(h: int, alpha: float, steps: int) -> float:
+    """Exact float64 second derivative along (mid+t, mid-t), via autograd."""
+    mid = float(h**alpha)
+    displacement = torch.tensor(0.0, dtype=torch.float64, requires_grad=True)
+    loss = torch_three_layer_loss(mid + displacement, mid - displacement, h, steps)
+    first = torch.autograd.grad(loss, displacement, create_graph=True)[0]
+    second = torch.autograd.grad(first, displacement)[0]
+    return float(second)
+
+
+def torch_orthogonal(h: int, generator: torch.Generator, dtype: torch.dtype = torch.float32) -> torch.Tensor:
+    matrix = torch.randn((h, h), generator=generator, dtype=dtype)
+    q, r = torch.linalg.qr(matrix)
+    signs = torch.sign(torch.diag(r))
+    signs[signs == 0] = 1
+    return q * signs
+
+
+def three_layer_reduced_train_step(
+    w1: torch.Tensor,
+    w2: torch.Tensor,
+    a: torch.Tensor,
+    train_target: torch.Tensor,
+    h: int,
+    eta1: float,
+    eta2: float,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Exact simultaneous GD step for the paper's whitened X^T X = hI setup.
+
+    Eliminating X analytically changes neither the objective nor its gradients,
+    but avoids cubic X@W products and allows the h=d=n=1000 protocol to run on
+    the 15-GB CPU host.
+    """
+    inv_sqrt_h = 1 / math.sqrt(h)
+    error = inv_sqrt_h * (w1 @ w2 @ a) - train_target
+    grad1 = inv_sqrt_h * torch.outer(error, w2 @ a)
+    grad2 = inv_sqrt_h * torch.outer(w1.T @ error, a)
+    return w1 - eta1 * grad1, w2 - eta2 * grad2
+
+
+def three_layer_direct_curve(
+    *,
+    h: int,
+    lr_max: float,
+    seeds: list[int],
+    points: int = 19,
+    label_noise_variance: float = 0.0,
+) -> dict[int, np.ndarray]:
+    """Direct matrix-GD curves at the paper's orthogonal full-width setup."""
+    fractions = np.linspace(0.05, 0.95, points)
+    sums = {1: np.zeros(points), 2: np.zeros(points)}
+    for seed in seeds:
+        generator = torch.Generator().manual_seed(seed)
+        w1_initial = torch_orthogonal(h, generator)
+        w2_initial = torch_orthogonal(h, generator)
+        a = torch.randn(h, generator=generator) / math.sqrt(h)
+        beta = torch.randn(h, generator=generator) / math.sqrt(h)
+        # For X=sqrt(h)Q and xi~N(0,rho I), X^T xi / h has variance rho/h.
+        train_target = beta + math.sqrt(label_noise_variance / h) * torch.randn(h, generator=generator)
+        for index, fraction in enumerate(fractions):
+            eta1 = float(fraction * lr_max)
+            eta2 = float((1 - fraction) * lr_max)
+            w1, w2 = w1_initial.clone(), w2_initial.clone()
+            for step in (1, 2):
+                w1, w2 = three_layer_reduced_train_step(w1, w2, a, train_target, h, eta1, eta2)
+                test_error = (w1 @ w2 @ a) / math.sqrt(h) - beta
+                sums[step][index] += float(test_error @ test_error)
+    return {step: values / len(seeds) for step, values in sums.items()}
 
 
 def independent_one_step_loss(eta1: float, eta2: float, h: int) -> float:

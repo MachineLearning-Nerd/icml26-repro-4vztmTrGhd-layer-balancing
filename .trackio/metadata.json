@@ -13,7 +13,7 @@
   "autosync": true,
   "private": false,
   "title": "Repro - Balancing Learning Rates Across Layers",
-  "last_page": "claim-2-exact-gradients-and-losses",
+  "last_page": "conclusion",
   "local_dashboards": {},
   "artifacts_bucket": "DineshAI/4vztmTrGhd-artifacts"
 }

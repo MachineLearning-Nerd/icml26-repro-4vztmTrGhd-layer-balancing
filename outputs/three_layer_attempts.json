@@ -1,0 +1,147 @@
+{
+  "paper": "4vztmTrGhd",
+  "claim": "Claim 1, missing three-layer scope",
+  "verdict": "verified",
+  "approaches_passed": 10,
+  "approaches_total": 10,
+  "attempts": [
+    {
+      "id": 1,
+      "approach": "dense Figure-2 theoretical landscapes",
+      "passed": true,
+      "evidence": "30/30 curves have the claimed local shape"
+    },
+    {
+      "id": 2,
+      "approach": "Corollary 5.6 width/alpha curvature sweep",
+      "passed": true,
+      "evidence": "24 signed-curvature checks"
+    },
+    {
+      "id": 3,
+      "approach": "symbolic constrained second derivative",
+      "passed": true,
+      "evidence": [
+        {
+          "steps": 1,
+          "expression": "-4*(e**2 + width)/width**4",
+          "value_h1000_alpha05": -8e-09
+        },
+        {
+          "steps": 2,
+          "expression": "-4*(2*e**6 + 16*e**4*width**2 + 18*e**4*width + 17*e**2*width**3 + 37*e**2*width**2 - 4*e*width**4 + width**4 + 5*width**3)/width**6",
+          "value_h1000_alpha05": 0.0003697164256269407
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "approach": "pinned official-source drift audit",
+      "passed": true,
+      "evidence": {
+        "one_step_missing_term": "2*eta1*eta2/h^3",
+        "max_residual_after_accounting_for_term": 4.883246584874712e-16,
+        "two_step_max_abs_error": 7.275957614183426e-12,
+        "two_step_max_relative_error": 2.200619241435319e-16,
+        "all_official_curves_keep_claimed_shape": true
+      }
+    },
+    {
+      "id": 5,
+      "approach": "independent p/q polynomial identity",
+      "passed": true,
+      "evidence": {
+        "comparisons": 2000,
+        "max_abs_error": 2.220446049250313e-16
+      }
+    },
+    {
+      "id": 6,
+      "approach": "80-digit arbitrary-precision curvature",
+      "passed": true,
+      "evidence": [
+        {
+          "h": 512,
+          "steps": 1,
+          "curvature": "-0.0000000854154224119667658794726888031"
+        },
+        {
+          "h": 512,
+          "steps": 2,
+          "curvature": "0.000532670138996416160190778731959"
+        },
+        {
+          "h": 1000,
+          "steps": 1,
+          "curvature": "-0.000000011981049259875518405409821587"
+        },
+        {
+          "h": 1000,
+          "steps": 2,
+          "curvature": "0.000319561838625227081583352378156"
+        },
+        {
+          "h": 2048,
+          "steps": 1,
+          "curvature": "-0.0000000014638281078415859157340659993"
+        },
+        {
+          "h": 2048,
+          "steps": 2,
+          "curvature": "0.000146846445292722713250066263265"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "approach": "float64 automatic-differentiation Hessian",
+      "passed": true,
+      "evidence": "24 signed Hessians"
+    },
+    {
+      "id": 8,
+      "approach": "direct full-scale three-layer matrix GD",
+      "passed": true,
+      "evidence": {
+        "h=d=n": 1000,
+        "seeds": [
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "one_step_midpoint": "local_max",
+        "two_step_midpoint": "global_min"
+      }
+    },
+    {
+      "id": 9,
+      "approach": "literal full-X autograd cross-check",
+      "passed": true,
+      "evidence": {
+        "checks": 5,
+        "max_weight_update_error": 6.106226635438361e-16
+      }
+    },
+    {
+      "id": 10,
+      "approach": "full-scale noisy-label stress test",
+      "passed": true,
+      "evidence": {
+        "rho": 0.01,
+        "h=d=n": 1000,
+        "seeds": [
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "one_step_midpoint": "local_max",
+        "two_step_midpoint": "global_min"
+      }
+    }
+  ],
+  "runtime_seconds": 17.603571926010773
+}

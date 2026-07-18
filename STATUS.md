@@ -1,6 +1,6 @@
 # STATUS — Layer-Balancing (`4vztmTrGhd`)
 
-**Session:** autoloop. **Last updated:** 2026-07-17. **State:** locally complete; publication queued.
+**Session:** autoloop. **Last updated:** 2026-07-18. **State:** judge-gap revision synced; awaiting re-judge.
 
 ## Paper and source
 
@@ -11,6 +11,14 @@
 ## Current evidence
 
 - Claim 1: exact constrained landscapes across 12 valid `(h, alpha)` settings.
+- Claim 1 three-layer repair: ten independent approaches all pass. The strongest
+  are direct clean and label-noise (`rho=0.01`) matrix-GD runs at `h=d=n=1000`
+  over seeds 2020–2024; equal rates are a one-step local maximum and a two-step
+  global minimum in both conditions. The exact reduced-gradient implementation
+  matches literal full-`X` autograd updates within `6.11e-16`.
+- Three-layer source audit: the pinned plotting source omits the paper's
+  `2 eta1 eta2 / h^3` one-step term. The discrepancy is exactly isolated and
+  does not alter any of the 30 tested Figure-2 landscape classifications.
 - Claim 2: independent autograd gradient checks, compact polynomial identity,
   and direct Haar-matrix Monte Carlo evaluation of signal-only dynamics.
 - Fail-closed controls: theorem boundary and corrupted formula coefficient.
@@ -23,13 +31,14 @@
   surrogate error (`O(h^-1)` / `O(h^-1/2)`) and is disclosed rather than called
   bit-exact. The helper script's `not-verified` label comes from its own stricter
   0.1% cutoff, which is not a condition in the paper.
-- Trackio logbook is complete, tagged, pinned, and secret-scanned. Publishing to
-  `DineshAI/4vztmTrGhd` was attempted on 2026-07-17 but Hugging Face rejected
-  Space creation because the account reached its 20-Spaces-per-day limit. The
-  server requested retry in about 23 hours; no Space currently exists.
+- The first official verdict at Space SHA `9fca7ac` was medium quality, 2/4:
+  Claim 2 verified and Claim 1 inconclusive solely because the logbook tested
+  two-layer networks but not the explicitly claimed three-layer networks.
+- The revision's captured ten-approach run, raw CSV/JSON artifacts, source-drift
+  disclosure, and updated pinned executive summary are synced to
+  `DineshAI/4vztmTrGhd`.
 
 ## Next
 
-- Retry `trackio logbook publish DineshAI/4vztmTrGhd` after the daily Space-creation
-  quota resets, verify the public tags and bucket, then move the registry row to
-  `under_verdict`.
+- Complete the publish gate, push the revision to public GitHub, verify the live
+  Space SHA/tags/artifacts, and poll the official verdict for the expected 4/4.
